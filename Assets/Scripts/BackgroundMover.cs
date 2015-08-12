@@ -3,13 +3,20 @@ using System.Collections;
 
 public class BackgroundMover : MonoBehaviour {
 
+    private bool paused = false;
 	// Use this for initialization
-	void Start () {
-	
+	void Start ()
+    {
+        EventManager.onEventPause += OnEventPause;
+        EventManager.onEventUnPause += OnEventUnPause;
 	}
 	
 	// Update is called once per frame
-	void Update () {
+	void Update ()
+    {
+        if(paused)
+            return;
+
         MoveChildren();
 	}
 
@@ -29,5 +36,14 @@ public class BackgroundMover : MonoBehaviour {
             temp.x -= PlayerBehaviour.HorizontalSpeed;
             child.position = temp;
         }
+    }
+
+    private void OnEventPause()
+    {
+        paused = true;
+    }
+    private void OnEventUnPause()
+    {
+        paused = false;
     }
 }

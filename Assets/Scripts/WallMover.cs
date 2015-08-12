@@ -4,24 +4,32 @@ using System.Collections;
 public class WallMover : MonoBehaviour {
 
     private Timer timer = new Timer();
-    public float distance;
+    private bool paused = false;
 
+    public float distance;
     public GameObject wall;
 
 	// Use this for initialization
-	void Start () {
+	void Start ()
+    {
         timer.SetActive(true);
         timer.SetTarget(distance);
+
+        EventManager.onEventPause += OnEventPause;
+        EventManager.onEventUnPause += OnEventUnPause;
 	}
 	
 	// Update is called once per frame
-	void Update () {
+	void Update ()
+    {
+        if (paused)
+            return;
+
         MoveChildren();
 
         if (timer.TimerUpdate(PlayerBehaviour.HorizontalSpeed))
         {
             CreateCharacter();
-            Debug.Log(timer.GetTime() - timer.GetTarget());
             timer.SetTime(timer.GetTime() - timer.GetTarget());
         }
 	}
@@ -45,5 +53,14 @@ public class WallMover : MonoBehaviour {
     {
         GameObject temp = (GameObject)Instantiate(wall, transform.position, transform.rotation);
         temp.transform.parent = transform;
+    }
+
+	private void OnEventPause()
+    {
+        paused = true;
+    }
+    private void OnEventUnPause()
+    {
+        paused = false;
     }
 }

@@ -5,24 +5,30 @@ using System.Collections.Generic;
 
 public class CharacterMover : MonoBehaviour {
 
-    public Text text;
-
-    public float distance = 7.0f;
+    private bool paused = false;
     private float distance_covered = 0;
-
-    public GameObject[] characters;
-
     private Timer timer = new Timer();
 
+    public Text text;
+    public float distance = 7.0f;
+    public GameObject[] characters;
 
 	// Use this for initialization
-	void Start () {
+	void Start ()
+    {
         timer.SetTarget(distance);
         timer.SetActive(true);
+
+        EventManager.onEventPause += OnEventPause;
+        EventManager.onEventUnPause += OnEventUnPause;
 	}
 	
 	// Update is called once per frame
-	void Update () {
+	void Update ()
+    {
+        if (paused)
+            return;
+
         MoveChildren();
 
         if (timer.TimerUpdate(PlayerBehaviour.HorizontalSpeed))
@@ -53,7 +59,30 @@ public class CharacterMover : MonoBehaviour {
 
     void CreateCharacter()
     {
-        GameObject temp = (GameObject)Instantiate(characters[Random.Range(0, characters.GetLength(0))], transform.position, transform.rotation);
-        temp.transform.parent = transform;
+        int roll = Random.Range(1, 100);
+        if(roll < 45)
+        {
+            GameObject temp = (GameObject)Instantiate(characters[0], transform.position, transform.rotation);
+            temp.transform.parent = transform;
+        }
+        else if(roll < 90)
+        {
+            GameObject temp = (GameObject)Instantiate(characters[1], transform.position, transform.rotation);
+            temp.transform.parent = transform;
+        }
+        else if(roll < 100)
+        {
+            GameObject temp = (GameObject)Instantiate(characters[2], transform.position, transform.rotation);
+            temp.transform.parent = transform;
+        }
+    }
+
+	private void OnEventPause()
+    {
+        paused = true;
+    }
+    private void OnEventUnPause()
+    {
+        paused = false;
     }
 }
