@@ -9,14 +9,21 @@ public class WallMover : MonoBehaviour {
     public float distance;
     public GameObject wall;
 
+    void OnEnable()
+    {
+        EventManager.onEventPause += OnEventPause;
+        EventManager.onEventUnPause += OnEventUnPause;
+    }
+    void OnDisable()
+    {
+        EventManager.onEventPause -= OnEventPause;
+        EventManager.onEventUnPause -= OnEventUnPause;
+    }
 	// Use this for initialization
 	void Start ()
     {
         timer.SetActive(true);
         timer.SetTarget(distance);
-
-        EventManager.onEventPause += OnEventPause;
-        EventManager.onEventUnPause += OnEventUnPause;
 	}
 	
 	// Update is called once per frame
@@ -38,7 +45,7 @@ public class WallMover : MonoBehaviour {
     {
         foreach (Transform child in transform)
         {
-            if (child.transform.position.x < -30)
+            if (child.transform.position.x < -35)
             {
                 Destroy(child.gameObject);
             }

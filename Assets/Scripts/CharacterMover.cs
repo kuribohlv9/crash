@@ -13,14 +13,21 @@ public class CharacterMover : MonoBehaviour {
     public float distance = 7.0f;
     public GameObject[] characters;
 
+    void OnEnable()
+    {
+        EventManager.onEventPause += OnEventPause;
+        EventManager.onEventUnPause += OnEventUnPause;
+    }
+    void OnDisable()
+    {
+        EventManager.onEventPause -= OnEventPause;
+        EventManager.onEventUnPause -= OnEventUnPause;
+    }
 	// Use this for initialization
 	void Start ()
     {
         timer.SetTarget(distance);
         timer.SetActive(true);
-
-        EventManager.onEventPause += OnEventPause;
-        EventManager.onEventUnPause += OnEventUnPause;
 	}
 	
 	// Update is called once per frame

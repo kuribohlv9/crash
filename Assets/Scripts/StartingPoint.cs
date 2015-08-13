@@ -4,16 +4,25 @@ using System.Collections;
 public class StartingPoint : MonoBehaviour {
 
     private bool rotate_active = true;
-
+    public GameObject player;
     private float angle = 0;
 
     [SerializeField]
     private float angle_incrementation = 0.2f;
 
-	// Use this for initialization
-	void Start () {
+    void OnEnable()
+    {
         EventManager.onMousePress += onMousePress;
         EventManager.onMouseUp += onMouseUp;
+    }
+    void OnDisable()
+    {
+        EventManager.onMousePress -= onMousePress;
+        EventManager.onMouseUp -= onMouseUp;
+    }
+	// Use this for initialization
+	void Start () {
+
 	}
 	
 	// Update is called once per frame
@@ -51,5 +60,16 @@ public class StartingPoint : MonoBehaviour {
     {
         rotate_active = true;
         Debug.Log(angle);
+    }
+
+    public void StartLaunch(float power)
+    {
+        if (angle < 10)
+            angle = 10;
+        else if (angle > 80)
+            angle = 80;
+
+        player.GetComponent<PlayerBehaviour>().StartLaunch(angle, power);
+        gameObject.SetActive(false);
     }
 }

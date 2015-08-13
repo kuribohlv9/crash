@@ -13,16 +13,31 @@ public class PlayerBehaviour : MonoBehaviour {
     public Text power_text;
     public Text height_text;
 
+    void OnEnable()
+    {
+        EventManager.onEventPause += OnEventPause;
+        EventManager.onEventUnPause += OnEventUnPause;
+
+        HorizontalSpeed = 0.5f;
+        PlayerAngle = 45;
+
+    }
+    void OnDisable()
+    {
+        EventManager.onEventPause -= OnEventPause;
+        EventManager.onEventUnPause -= OnEventUnPause;
+    }
+
 	// Use this for initialization
 	void Start ()
     {
         _rigidbody = GetComponent<Rigidbody2D>();
-        Launch(1, 45);
         height_text.enabled = false;
 
-        EventManager.onEventPause += OnEventPause;
-        EventManager.onEventUnPause += OnEventUnPause;
-	}
+        //Launch(1, 45);
+        EventManager.instance.EventPause(0);
+        _rigidbody.isKinematic = true;
+    }
 	
 	// Update is called once per frame
 	void Update ()
@@ -41,7 +56,7 @@ public class PlayerBehaviour : MonoBehaviour {
         }
 	}
 
-    public void Launch(float modifier, float angle, float flatpower = 0)
+    private void Launch(float modifier, float angle, float flatpower = 0)
     {
         float power = HorizontalSpeed / Mathf.Cos(PlayerAngle * (Mathf.PI / 180));
         power = (power * modifier) + (flatpower / 100);
@@ -55,6 +70,10 @@ public class PlayerBehaviour : MonoBehaviour {
         _rigidbody.velocity = temp;
 
         power_text.text = (power*100).ToString("F2") + "P";
+        if(power*100 < 10)
+        {
+            Application.LoadLevel("menu");
+        }
     }
 
     void OnTriggerEnter2D(Collider2D other)
@@ -74,6 +93,13 @@ public class PlayerBehaviour : MonoBehaviour {
         {
             Launch(0.95f, PlayerAngle, -3);
         }
+    }
+
+    public void StartLaunch(float angle, float power)
+    {
+        _rigidbody.isKinematic = false;
+        EventManager.instance.EventUnPause();
+        Launch(power, angle);
     }
 
     private void OnEventPause()

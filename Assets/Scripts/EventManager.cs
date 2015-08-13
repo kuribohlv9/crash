@@ -39,28 +39,33 @@ public class EventManager : MonoBehaviour {
 	void Update () {
 	    if(Input.GetMouseButtonDown(0))
         {
-            onMousePress();
+            if(onMousePress != null)
+                onMousePress();
         }
 
         if(Input.GetMouseButtonUp(0))
         {
-            onMouseUp();
+            if(onMouseUp != null)
+                onMouseUp();
         }
 	}
 
-    public void EventPause()
+    public void EventPause(float time = 0.5f)
     {
-        onEventPause();
-        StartCoroutine(Wait());
+        if(onEventPause != null)
+            onEventPause();
+        if(time != 0)
+            StartCoroutine(Wait(time));
     }
     public void EventUnPause()
     {
-        onEventUnPause();
+        if(onEventUnPause != null)
+            onEventUnPause();
     }
 
-    IEnumerator Wait()
+    IEnumerator Wait(float time)
     {
-        yield return new WaitForSeconds(0.5f);
+        yield return new WaitForSeconds(time);
         EventUnPause();
     }
 }
